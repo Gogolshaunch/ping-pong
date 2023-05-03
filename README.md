@@ -1,3 +1,5 @@
+import time
+
 from pygame import *
 
 
@@ -54,12 +56,10 @@ class Ball(GameSprite):
         if ball.rect.x < 0:
             lost1 += 1
             self.kill()
-            ball.reset()
 
         if ball.rect.x > win_width - 50:
             lost2 += 1
             self.kill()
-            ball.reset()
 
 
 def update_status():
@@ -123,7 +123,8 @@ while game:
     else:
         finish = False
         lost1, lost2 = 0, 0
+        ball.reset()
         time.delay(3000)
     display.update()
     clock.tick(FPS)
-
+time.delay(50)
