@@ -55,11 +55,11 @@ class Ball(GameSprite):
 
         if ball.rect.x < 0:
             lost1 += 1
-            self.kill()
+            ball_respawn()
 
         if ball.rect.x > win_width - 50:
             lost2 += 1
-            self.kill()
+            ball_respawn()
 
 
 def update_status():
@@ -67,18 +67,33 @@ def update_status():
     window.blit(text, (10, 20))
 
     text_lose = font1.render("Пропущено: " + str(lost2), True, (180, 0, 0))
-    window.blit(text_lose, (400, 20))
+    window.blit(text_lose, (500, 20))
+
+
+def ball_respawn():
+    ball.kill()
+    ball.reset()
+
+
+def game_score():
+    global finish
+    if lost1 >= max_lost:
+        window.blit(lose2, (280, 250))
+        finish = True
+    if lost2 >= max_lost:
+        window.blit(lose1, (280, 250))
+        finish = True
 
 
 back = (200, 255, 255)
-win_width = 600
-win_height = 500
+win_width = 700
+win_height = 600
 
 window = display.set_mode((win_width, win_height))
 window.fill(back)
-racket1 = Player('pong/racket.png', 30, 200, 4, 50, 150)
-racket2 = Player('pong/racket.png', 520, 200, 4, 50, 150)
-ball = Ball('pong/tenis_ball.png', 200, 200, 4, 50, 50)
+racket1 = Player('pong/racket.png', 30, 230, 4, 50, 180)
+racket2 = Player('pong/racket.png', 620, 230, 4, 50, 180)
+ball = Ball('pong/tenis_ball.png', 300, 250, 4, 50, 50)
 
 font.init()
 font1 = font.Font(None, 35)
@@ -105,12 +120,8 @@ while game:
             game = False
     if not finish:
         window.fill(back)
-        if lost1 >= max_lost:
-            window.blit(lose2, (200, 200))
-            finish = True
-        if lost2 >= max_lost:
-            window.blit(lose1, (200, 200))
-            finish = True
+
+        game_score()
 
         update_status()
         racket1.update_l()
@@ -123,7 +134,6 @@ while game:
     else:
         finish = False
         lost1, lost2 = 0, 0
-        ball.reset()
         time.delay(3000)
     display.update()
     clock.tick(FPS)
